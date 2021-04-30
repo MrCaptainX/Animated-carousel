@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Animated Carousel</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<script src="js/jquery-3.5.1.min.js"></script>
+<style type="text/css">
+* {
+   margin:0;
+   padding:0;
+   box-sizing: border-box;
+}
+
+body{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background-color:#222;
+}
+
+
+.carousel{
+   width:90%;
+   border:4px solid #CCC;
+   position:relative;
+}
+
+.slide-container{
+  position: relative;
+  width: 100%;
+  overflow:hidden;
+}
+.slide-container  .slide {
+  position: relative;
+  display: none;
+  -webkit-transition: .8s ease-in-out left;
+  -o-transition: .8s ease-in-out left;
+  transition: .8s ease-in-out left;
+}
+
+@media all and (transform-3d), (-webkit-transform-3d) {
+  .slide-container  .slide {
+    -webkit-transition: -webkit-transform .8s ease-in-out;
+         -o-transition:      -o-transform .8s ease-in-out;
+            transition:         transform .8s ease-in-out;
+  }
+  
+  
+  .slide-container  .slide.next,
+  .slide-container  .slide.active.right {
+    -webkit-transform: translate3d(100%, 0, 0);
+            transform: translate3d(100%, 0, 0);
+  }
+  .slide-container  .slide.prev,
+  .slide-container  .slide.active.left {
+  
+    -webkit-transform: translate3d(-100%, 0, 0);
+            transform: translate3d(-100%, 0, 0);
+  }
+  .slide-container  .slide.next.left,
+  .slide-container  .slide.prev.right,
+  .slide-container  .slide.active {
+  
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+
+.slide-container  .slide img,
+.slide-container  .slide a img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+
+
+
+.slide-container  .active,
+.slide-container  .next,
+.slide-container  .prev {
+  display: block;
+}
+.slide-container  .next,
+.slide-container  .prev {
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+
+
+
+.carousel-btn {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 15%;
+  font-size: 20px;
+  color: #fff;
+  text-align: center;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, .6);
+  background-color: rgba(0, 0, 0, 0);
+  opacity: .5;
+}
+
+.carousel-btn.left {
+   left:0;
+   right:auto
+    }
+    
+.carousel-btn.right {
+  right: 0;
+  left: auto;
+   }
+
+
+.carousel-btn .btn-next,
+.carousel-btn .btn-prev {
+  position: absolute;
+  top: 50%;
+  z-index: 5;
+  display: inline-block;
+  margin-top: -10px;
+}
+
+
+.carousel-btn .btn-prev {
+  left: 50%;
+  margin-left: -10px;
+}
+
+.carousel-btn .btn-next {
+  right: 50%;
+  margin-right: -10px;
+}
+
+@media screen and (min-width: 780px) {
+  .carousel-btn  .btn-prev,
+  .carousel-btn  .btn-next {
+     width: 30px;
+    height: 30px;
+    margin-top: -10px;
+    font-size: 30px;
+  }
+}
+
+</style>
+</head>
+<body>
+
+   <div id="carousel" class="carousel">
+      <div class="slide-container">
+           <div class="slide active">
+               <img src="img/img1.png">
+           </div>
+       
+          <div class="slide">
+              <img src="img/img2.png">
+          </div>
+       
+          <div class="slide">
+              <img src="img/img3.png">
+         </div>
+         
+         <div class="slide">
+             <img src="img/img4.png">
+         </div>
+         
+         <div class="slide">
+         	 <img src="img/img5.png">
+         </div>
+      </div>
+      
+      <a class="carousel-btn left">
+          <span class="btn-prev">&#10094</span>
+      </a>
+      
+      <a class="carousel-btn right">
+        <span class="btn-next">&#10095</span>
+      </a>
+      
+   </div>
+   
+   <script type="text/javascript">
+        
+        var inAnimation = false;
+          
+        function next(){
+           if(inAnimation) return;
+           slide("next")
+        }
+        
+        function prev(){
+          if(inAnimation) return;
+          slide("prev");
+        }
+        
+        
+        function slide(dir,scope){
+           var currentEl = $(".slide.active")
+           var index = currentEl.index();
+           
+           var to = dir == "next" ? "left" : "right";
+           var newSlide = scope || $(".slide").eq( index + ( dir == "prev" ? -1 : 1 ) % $(".slide").length );
+                 
+           if(newSlide.length){
+              if (newSlide.hasClass('active')) return (this.inAnimation = false)
+              inAnimation = true;
+              newSlide.addClass(dir);
+              newSlide[0].offsetWidth;
+              currentEl.addClass(to);
+              newSlide.addClass(to);
+              currentEl.one("transitionend", function(){
+                 newSlide.removeClass( [  to, dir ].join( ' ' )  ).addClass( "active" )
+                 currentEl.removeClass( [ "active", to ].join( ' ' ) )
+                 inAnimation = false    
+              });
+           }
+        }
+        
+        $(".carousel").find(".left").click(function(){
+            prev()
+        });
+        
+        $(".carousel").find(".right").click(function(){
+           next()
+        });
+        
+     
+   </script>
+   
+</body>
+</html>
